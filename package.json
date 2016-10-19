@@ -1,0 +1,14 @@
+{
+  "name": "comparador",
+  "version": "0.0.1",
+  "description": "Aplicação para obter valores para comparar entre dotz e livelo",
+  "engines": {
+    "node": "5.9.1"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "machine_learning": "0.0.9"
+  }
+}
