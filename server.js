@@ -1,60 +1,34 @@
 'use strict'
+// create the perceptron
+var MLP = require('mlp');
+var mlp = new MLP(2,3);
 
-const request = require('request');
+// add hidden layers and initialize
+mlp.addHiddenLayer(5);
+mlp.addHiddenLayer(5);
+mlp.init();
 
-start();
+// create a training set
+mlp.addToTrainingSet([2, 1], [1, 0, 0]);
+mlp.addToTrainingSet([0, 1], [1, 0, 0]);
+mlp.addToTrainingSet([3, 4], [0, 1, 0]);
+mlp.addToTrainingSet([2, 3], [0, 1, 0]);
+mlp.addToTrainingSet([1, 0], [0, 0, 1]);
+mlp.addToTrainingSet([3, 1], [0, 0, 1]);
 
-function start(){
-    request({
-        uri: 'http://www.pontoslivelo.com.br/rest/model/atg/commerce/catalog/ProductCatalogActor/',
-        method: 'GET',
-        timeout: 50000
-    }, function (error, response, body) {
-        try{
-          var result = JSON.parse(body).rootCategories;
-          for (var i = 0; i < result.length; i++) {
-            getCategory(result[i].id);
-        }
-        }catch(e){
-            return
-        }    
-});    
+// train the perceptron
+var learnRate = 0.5;
+var error = Number.MAX_VALUE;
+while (error > 0.01) {
+    error = mlp.train(learnRate);
+    console.log('error', error);
 }
 
-function getCategory(catalog){
- request({
-    uri: 'http://www.pontoslivelo.com.br/rest/model/atg/commerce/catalog/ProductCatalogActor/getCategory?categoryId='+catalog+'&atg-rest-output=json',
-    method: 'GET',
-    timeout: 50000
-}, function (error, response, body) {
-    if(!body) return;
-    try {
-        var result = JSON.parse(body);
-        if(!result) return;
-        var categories = result.childCategories;
-        if(categories){
-            for (var i = 0; i < categories.length; i++) {
-                getCategory(categories[i].id);
-            }   
-        }
-        var products = result.childProducts;
-        if(products){
-            for (var i = 0; i < products.length; i++) {
-                var skus = products[i].childSKUs;
-                if(skus.length > 0){
-                    if(skus[0].gtin && skus[0].listPrice){
-                        var ean = skus[0].gtin;   
-                        var price = skus[0].listPrice;  
-                        console.log('ean:', ean);                    
-                        console.log('price:',price);    
-                    }
-                }
-            }    
-        }
-    } catch (e) {
-        return;
-    }
-});    
+var elementToClassify = [1,1];
+var classification = mlp.classify(elementToClassify);
+
+var data = mlp.exportToJson();
+
+for (var i = 0; i < data.mlpData.length; i++) {
+    console.log(data.mlpData[i]);
 }
-
-
