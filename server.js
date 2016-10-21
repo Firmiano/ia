@@ -3,24 +3,40 @@
 var MLP = require('mlp');
 var mlp = new MLP(2,3);
 var nn = require('nearest-neighbor');
- 
-knn();
+var kNN = require('k.n.n');
 
+var data = [ new kNN.Node({paramA: 1, paramB: 300, type: 'typeA'}), 
+            new kNN.Node({paramA: 14, paramB: 350, type: 'typeA'}), 
+            new kNN.Node({paramA: 2, paramB: 1200, type: 'typeB'}), 
+            new kNN.Node({paramA: 6, paramB: 900, type: 'typeB'}), 
+            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
+            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
+            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
+            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}), 
+            new kNN.Node({paramA: 2, paramB: 900, type: 'typeC'}) ];
+
+var example = new kNN(data);
+
+var results = example.launch(9, new kNN.Node({paramA:2, paramB:1220, type:false}));
+console.log('results', results);
+
+console.log(results.type + ': '+results.percentage+'%');
+ 
 
 function knn(){
 	var items = [
-	  { name: "Bill", age: 10, pc: "Mac", ip: "68.23.13.8" },
-	  { name: "Alice", age: 22, pc: "Windows", ip: "193.186.11.3" },
-	  { name: "Bob", age: 12, pc: "Windows", ip: "56.89.22.1" }
+	  { name: 'Bill', age: 10, pc: 'Mac', ip: '68.23.13.8' },
+	  { name: 'Alice', age: 22, pc: 'Windows', ip: '193.186.11.3' },
+	  { name: 'Bob', age: 12, pc: 'Windows', ip: '56.89.22.1' }
 	];
 	 
-	var query = { name: "Bill", age: 12, pc: "Windows", ip: "68.23.13.10" };
+	var query = { name: 'Bill', age: 12, pc: 'Windows', ip: '68.23.13.10' };
 	 
 	var fields = [
-	  { name: "name", measure: nn.comparisonMethods.word },
-	  { name: "age", measure: nn.comparisonMethods.number, max: 100 },
-	  { name: "pc", measure: nn.comparisonMethods.word }, 
-	  { name: "ip", measure: nn.comparisonMethods.ip }
+	  { name: 'name', measure: nn.comparisonMethods.word },
+	  { name: 'age', measure: nn.comparisonMethods.number, max: 100 },
+	  { name: 'pc', measure: nn.comparisonMethods.word }, 
+	  { name: 'ip', measure: nn.comparisonMethods.ip }
 	];
 	 
 	nn.findMostSimilar(query, items, fields, function(nearestNeighbor, probability) {
