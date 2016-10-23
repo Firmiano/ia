@@ -1,7 +1,7 @@
 'use strict'
 // create the perceptron
 var MLP = require('mlp');
-var mlp = new MLP(2,3);
+var mlp = new MLP(9,1);
 var fs = require('fs'); 
 var parse = require('csv-parse');
 var KNN = require('ml-knn');
@@ -13,7 +13,6 @@ var dataTraining=[];
 var dataTest=[];
 
 startProgram();
-//startMlp();
 
 function startProgram(){
     //Lendo arquivo csv com os dados
@@ -91,6 +90,7 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
     }
 
     var example = new kNN(data);
+
     for (var i = 0; i < dataTest.length; i++) {
         var obj = {
             paramA: parseFloat(dataTest[i].paramA), 
@@ -124,14 +124,15 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     console.log('Ininicando MLP de '+ hiddenLayer +' camada oculta');
 	// add hidden layers and initialize
     for (var i = 0; i < hiddenLayer; i++) {
-        mlp.addHiddenLayer(5);    
+        mlp.addHiddenLayer(10);    
     }
 
     mlp.init();
 
     // create a training set
     for (var i = 0; i < arrayTraining.length; i++) {
-        mlp.addToTrainingSet([arrayTraining[i][0],arrayTraining[i][1]], [arrayTraining[i][9], arrayTraining[i][10], arrayTraining[i][11]]);    
+        mlp.addToTrainingSet([arrayTraining[i][0],arrayTraining[i][1],arrayTraining[i][2],arrayTraining[i][3],arrayTraining[i][4],arrayTraining[i][5],arrayTraining[i][6],arrayTraining[i][7],arrayTraining[i][8]]
+            , [arrayTraining[i][9]]);    
     }
 
     // train the perceptron
@@ -142,10 +143,10 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
  }
 
  for (var i = 0; i < arrayTesting.length; i++) {
-    mlp.classify([arrayTesting[i][0],arrayTesting[i][1]]);
+    mlp.classify([arrayTesting[i][0],arrayTesting[i][1],arrayTesting[i][2],arrayTesting[i][3],arrayTesting[i][4],arrayTesting[i][5],arrayTesting[i][6],arrayTesting[i][7],arrayTesting[i][8]]);
 }
 
 var data = mlp.exportToJson();
-console.log('data', data);
+console.log('data', data.mlpData[0].weights);
 callback();
 }
