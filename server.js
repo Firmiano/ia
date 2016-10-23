@@ -32,12 +32,12 @@ function startProgram(){
                     //Chamando a função para k = 9
                     startKnn(9,dataTraining,dataTest,function(){
                         console.log('Fim Knn!');
-                        //Chamando a função 1x camadas ocultas sendo 5 nodes em cada camada.
-                        startMlp([5],dataTraining,dataTest,function(){
-                            //Chamando a função 2x camadas ocultas sendo 5 nodes em cada camada.
-                            startMlp([5,5],dataTraining,dataTest,function(){
-                              //Chamando a função 3x camadas ocultas sendo 5 nodes em cada camada.
-                              startMlp([5,5,5],dataTraining,dataTest,function(){
+                        //Chamando a função 1x camadas ocultas sendo 10 nodes em cada camada.
+                        startMlp([10],dataTraining,dataTest,function(){
+                            //Chamando a função 2x camadas ocultas sendo 10 nodes em cada camada.
+                            startMlp([10,10],dataTraining,dataTest,function(){
+                              //Chamando a função 3x camadas ocultas sendo 10 nodes em cada camada.
+                              startMlp([10,10,10],dataTraining,dataTest,function(){
                                 console.log('Fim MLP!');
                             });  
                           });
@@ -73,7 +73,7 @@ function separateTrainingTesting(array, callback){
     console.log('');
     callback();
 }
-
+//Função responsável por processar o Knn.
 function startKnn(k,arrayTraining,arrayTesting,callback){
     console.log("Iniciando Knn de k =",k);
 
@@ -152,7 +152,7 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
     console.log('');
     callback();
 }
-
+//Função responsável por processar o Mlp.
 function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
 
     console.log('Ininicando MLP de '+ hiddenLayer.length +' camada oculta');
@@ -163,10 +163,8 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     var cinco = 0;
     var seis = 0;
     var sete = 0;
-    var erro = 0;
-    
+    var erro = 0;    
     var data = [];
-
 
     var net = new brain.NeuralNetwork({
         hiddenLayers: hiddenLayer,
@@ -257,5 +255,6 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     console.log('Quantidade de teste Erro = ', erro);
     console.log('---------------------------------------------------------');
     console.log('');
+
    callback();
  }
