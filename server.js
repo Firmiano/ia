@@ -1,43 +1,16 @@
 'use strict'
-// create the perceptron
-var MLP = require('mlp');
-var mlp = new MLP(9,1);
+
 //var mlp = new MLP(2,3);
 var fs = require('fs'); 
 var parse = require('csv-parse');
-var KNN = require('ml-knn');
-var knn = new KNN();
 var kNN = require("k.n.n");
+var brain = require("brain");
 
 var csvData=[];
 var dataTraining=[];
 var dataTest=[];
 
-/*
-// add hidden layers and initialize
-mlp.addHiddenLayer(5);
-mlp.addHiddenLayer(5);
-mlp.init();
 
-// create a training set
-mlp.addToTrainingSet([2, 1], [1, 0, 0]);
-mlp.addToTrainingSet([0, 1], [1, 0, 0]);
-mlp.addToTrainingSet([3, 4], [0, 1, 0]);
-mlp.addToTrainingSet([2, 3], [0, 1, 0]);
-mlp.addToTrainingSet([1, 0], [0, 0, 1]);
-mlp.addToTrainingSet([3, 1], [0, 0, 1]);
-
-var elementToClassify = [1, 1];
-var classification = mlp.classify(elementToClassify);
-
-// train the perceptron
-var learnRate = 0.5;
-var error = Number.MAX_VALUE;
-while (error > 0.01) {
-    error = mlp.train(learnRate);
-    console.log('error', error);
-}
-*/
 startProgram();
 
 function startProgram(){
@@ -180,56 +153,48 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
 }
 
 function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
+
     console.log('Ininicando MLP de '+ hiddenLayer +' camada oculta');
-	// add hidden layers and initialize
-    for (var i = 0; i < hiddenLayer; i++) {
-        mlp.addHiddenLayer(10);    
-    }
 
-    mlp.init();
+    var data = [];
+    var net = new brain.NeuralNetwork({
+        hiddenLayers: [hiddenLayer],
+        learningRate: 0.3 
+    });
 
-    // create a training set
     for (var i = 0; i < arrayTraining.length; i++) {
-        mlp.addToTrainingSet([
-            parseInt(arrayTraining[i].paramA),
-            parseInt(arrayTraining[i].paramB),
-            parseInt(arrayTraining[i].paramC),
-            parseInt(arrayTraining[i].paramD),
-            parseInt(arrayTraining[i].paramE),
-            parseInt(arrayTraining[i].paramF),
-            parseInt(arrayTraining[i].paramG),
-            parseInt(arrayTraining[i].paramH),
-            parseInt(arrayTraining[i].paramI)
-            ]
-            , [
-            parseInt(arrayTraining[i].type)
-            ]);    
+
+        var obj = {
+            paramA: parseFloat(arrayTraining[i].paramA), 
+            paramB: parseFloat(arrayTraining[i].paramB),
+            paramC: parseFloat(arrayTraining[i].paramC),
+            paramD: parseFloat(arrayTraining[i].paramD),
+            paramE: parseFloat(arrayTraining[i].paramE),
+            paramF: parseFloat(arrayTraining[i].paramF),
+            paramG: parseFloat(arrayTraining[i].paramG),
+            paramH: parseFloat(arrayTraining[i].paramH),
+            paramI: parseFloat(arrayTraining[i].paramI)
+        };
+
+        data.push({input: obj, output: {type : parseInt(arrayTraining[i].type)}});    
     }
+    net.train(data);
 
     for (var i = 0; i < arrayTesting.length; i++) {
-        mlp.classify([
-            parseInt(arrayTesting[i].paramA),
-            parseInt(arrayTesting[i].paramB),
-            parseInt(arrayTesting[i].paramC),
-            parseInt(arrayTesting[i].paramD),
-            parseInt(arrayTesting[i].paramE),
-            parseInt(arrayTesting[i].paramF),
-            parseInt(arrayTesting[i].paramG),
-            parseInt(arrayTesting[i].paramH),
-            parseInt(arrayTesting[i].paramI)
-            ]);
+        var obj = {
+            paramA: parseFloat(dataTest[i].paramA), 
+            paramB: parseFloat(dataTest[i].paramB),
+            paramC: parseFloat(dataTest[i].paramC),
+            paramD: parseFloat(dataTest[i].paramD),
+            paramE: parseFloat(dataTest[i].paramE),
+            paramF: parseFloat(dataTest[i].paramF),
+            paramG: parseFloat(dataTest[i].paramG),
+            paramH: parseFloat(dataTest[i].paramH),
+            paramI: parseFloat(dataTest[i].paramI)
+        };
+        var output = net.run(obj); 
+        console.log('output', output);
     }
-
-    console.log("Iniciando o treinamento...");
-      // train the perceptron
-      var learnRate = 0.3;
-      var error = Number.MAX_VALUE;
-      while (error > 0.01) {
-         error = mlp.train(learnRate);
-     }
-     console.log("Fim do treinamento...");
-
-     var data = mlp.exportToJson();
-     console.log('data', data);
-     callback();
+   
+   callback();
  }
