@@ -69,7 +69,13 @@ function separateTrainingTesting(array, callback){
 function startKnn(k,arrayTraining,arrayTesting,callback){
     console.log("Iniciando Knn de k =",k);
 
-    var ok = 0;
+    var um = 0;
+    var dois = 0;
+    var tres = 0;
+    var cinco = 0;
+    var seis = 0;
+    var sete = 0;
+
     var erro = 0;
     var data = [];
 
@@ -107,14 +113,31 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
 
         var results = example.launch(k, new kNN.Node(obj));
         if (results.type === dataTest[i].type){
-            ok++;
+            if(results.type === '1'){
+                um++;
+            }else if(results.type === '2'){
+                dois++;
+            }else if(results.type === '3'){
+                tres++;
+            }else if(results.type === '5'){
+                cinco++;
+            }else if(results.type === '6'){
+                seis++;
+            }else if(results.type === '7'){
+                sete++;
+            }
         }else{
             erro++;
         }
     }
 
     console.log('Quantidade de teste = ', arrayTesting.length);
-    console.log('Quantidade de teste Ok = ', ok);
+    console.log('Quantidade de teste na classe 1 = ', um);
+    console.log('Quantidade de teste na classe 2 = ', dois);
+    console.log('Quantidade de teste na classe 3 = ', tres);
+    console.log('Quantidade de teste na classe 5 = ', cinco);
+    console.log('Quantidade de teste na classe 6 = ', seis);
+    console.log('Quantidade de teste na classe 7 = ', sete);
     console.log('Quantidade de teste Erro = ', erro);
     callback();
 }
@@ -136,7 +159,7 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     }
 
     // train the perceptron
-    var learnRate = 0.5;
+    var learnRate = 0.3;
     var error = Number.MAX_VALUE;
     while (error > 0.01) {
      error = mlp.train(learnRate);
@@ -147,6 +170,6 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
 }
 
 var data = mlp.exportToJson();
-console.log('data', data.mlpData[0].weights);
+console.log('data', data);
 callback();
 }
