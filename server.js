@@ -179,7 +179,6 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
     callback();
 }
 
-
 function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     console.log('Ininicando MLP de '+ hiddenLayer +' camada oculta');
 	// add hidden layers and initialize
@@ -192,43 +191,45 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
     // create a training set
     for (var i = 0; i < arrayTraining.length; i++) {
         mlp.addToTrainingSet([
-            parseFloat(arrayTraining[i][0]),
-            parseFloat(arrayTraining[i][1]),
-            parseFloat(arrayTraining[i][2]),
-            parseFloat(arrayTraining[i][3]),
-            parseFloat(arrayTraining[i][4]),
-            parseFloat(arrayTraining[i][5]),
-            parseFloat(arrayTraining[i][6]),
-            parseFloat(arrayTraining[i][7]),
-            parseFloat(arrayTraining[i][8])
+            parseInt(arrayTraining[i].paramA),
+            parseInt(arrayTraining[i].paramB),
+            parseInt(arrayTraining[i].paramC),
+            parseInt(arrayTraining[i].paramD),
+            parseInt(arrayTraining[i].paramE),
+            parseInt(arrayTraining[i].paramF),
+            parseInt(arrayTraining[i].paramG),
+            parseInt(arrayTraining[i].paramH),
+            parseInt(arrayTraining[i].paramI)
             ]
             , [
-            parseInt(arrayTraining[i][9])
+            parseInt(arrayTraining[i].type)
             ]);    
     }
 
-    // train the perceptron
-    var learnRate = 0.3;
-    var error = Number.MAX_VALUE;
-    while (error > 0.01) {
-       error = mlp.train(learnRate);
-   }
+    for (var i = 0; i < arrayTesting.length; i++) {
+        mlp.classify([
+            parseInt(arrayTesting[i].paramA),
+            parseInt(arrayTesting[i].paramB),
+            parseInt(arrayTesting[i].paramC),
+            parseInt(arrayTesting[i].paramD),
+            parseInt(arrayTesting[i].paramE),
+            parseInt(arrayTesting[i].paramF),
+            parseInt(arrayTesting[i].paramG),
+            parseInt(arrayTesting[i].paramH),
+            parseInt(arrayTesting[i].paramI)
+            ]);
+    }
 
-   for (var i = 0; i < arrayTesting.length; i++) {
-    mlp.classify([
-        parseFloat(arrayTesting[i][0]),
-        parseFloat(arrayTesting[i][1]),
-        parseFloat(arrayTesting[i][2]),
-        parseFloat(arrayTesting[i][3]),
-        parseFloat(arrayTesting[i][4]),
-        parseFloat(arrayTesting[i][5]),
-        parseFloat(arrayTesting[i][6]),
-        parseFloat(arrayTesting[i][7]),
-        parseFloat(arrayTesting[i][8])
-        ]);
-}
+    console.log("Iniciando o treinamento...");
+      // train the perceptron
+      var learnRate = 0.3;
+      var error = Number.MAX_VALUE;
+      while (error > 0.01) {
+         error = mlp.train(learnRate);
+     }
+     console.log("Fim do treinamento...");
 
-var data = mlp.exportToJson();
-console.log('data', data);
-callback();
-}
+     var data = mlp.exportToJson();
+     console.log('data', data);
+     callback();
+ }
