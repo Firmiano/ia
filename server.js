@@ -2,6 +2,7 @@
 // create the perceptron
 var MLP = require('mlp');
 var mlp = new MLP(9,1);
+//var mlp = new MLP(2,3);
 var fs = require('fs'); 
 var parse = require('csv-parse');
 var KNN = require('ml-knn');
@@ -12,6 +13,31 @@ var csvData=[];
 var dataTraining=[];
 var dataTest=[];
 
+/*
+// add hidden layers and initialize
+mlp.addHiddenLayer(5);
+mlp.addHiddenLayer(5);
+mlp.init();
+
+// create a training set
+mlp.addToTrainingSet([2, 1], [1, 0, 0]);
+mlp.addToTrainingSet([0, 1], [1, 0, 0]);
+mlp.addToTrainingSet([3, 4], [0, 1, 0]);
+mlp.addToTrainingSet([2, 3], [0, 1, 0]);
+mlp.addToTrainingSet([1, 0], [0, 0, 1]);
+mlp.addToTrainingSet([3, 1], [0, 0, 1]);
+
+var elementToClassify = [1, 1];
+var classification = mlp.classify(elementToClassify);
+
+// train the perceptron
+var learnRate = 0.5;
+var error = Number.MAX_VALUE;
+while (error > 0.01) {
+    error = mlp.train(learnRate);
+    console.log('error', error);
+}
+*/
 startProgram();
 
 function startProgram(){
@@ -24,8 +50,9 @@ function startProgram(){
     .on('end',function() {
         //Chamando função para separação dos dados em treinamento e teste.
         separateTrainingTesting(csvData, function(){
-            //Chamando a função para k = 1
-            startKnn(1,dataTraining,dataTest,function(){
+            print("------------ Iniciando Classificacao KNN ----------------",function(){
+                  //Chamando a função para k = 1
+                  startKnn(1,dataTraining,dataTest,function(){
                 //Chamando a função para k = 5
                 startKnn(5,dataTraining,dataTest,function(){
                     //Chamando a função para k = 9
@@ -44,13 +71,19 @@ function startProgram(){
                     });
                 });  
             });
+              });
         });
     });    
 }
 
+function print(msg,callback){
+    console.log(msg);
+    callback();
+}
+
 //Função responsável por separar a massa da dodos em treinamento e teste.
 function separateTrainingTesting(array, callback){
-
+    console.log('');
     var total = array.length;
     console.log('Total de dados : ', total);
     
@@ -63,6 +96,7 @@ function separateTrainingTesting(array, callback){
     }
     console.log('Quantidade de treinamento : ', dataTraining.length);
     console.log('Quantidade de teste : ', dataTest.length);
+    console.log('');
     callback();
 }
 
@@ -130,8 +164,9 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
             erro++;
         }
     }
-
+    console.log('');
     console.log('Quantidade de teste = ', arrayTesting.length);
+    console.log('---------------------------------------------------------');
     console.log('Quantidade de teste na classe 1 = ', um);
     console.log('Quantidade de teste na classe 2 = ', dois);
     console.log('Quantidade de teste na classe 3 = ', tres);
@@ -139,6 +174,8 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
     console.log('Quantidade de teste na classe 6 = ', seis);
     console.log('Quantidade de teste na classe 7 = ', sete);
     console.log('Quantidade de teste Erro = ', erro);
+    console.log('---------------------------------------------------------');
+    console.log('');
     callback();
 }
 
@@ -154,19 +191,41 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
 
     // create a training set
     for (var i = 0; i < arrayTraining.length; i++) {
-        mlp.addToTrainingSet([arrayTraining[i][0],arrayTraining[i][1],arrayTraining[i][2],arrayTraining[i][3],arrayTraining[i][4],arrayTraining[i][5],arrayTraining[i][6],arrayTraining[i][7],arrayTraining[i][8]]
-            , [arrayTraining[i][9]]);    
+        mlp.addToTrainingSet([
+            parseFloat(arrayTraining[i][0]),
+            parseFloat(arrayTraining[i][1]),
+            parseFloat(arrayTraining[i][2]),
+            parseFloat(arrayTraining[i][3]),
+            parseFloat(arrayTraining[i][4]),
+            parseFloat(arrayTraining[i][5]),
+            parseFloat(arrayTraining[i][6]),
+            parseFloat(arrayTraining[i][7]),
+            parseFloat(arrayTraining[i][8])
+            ]
+            , [
+            parseInt(arrayTraining[i][9])
+            ]);    
     }
 
     // train the perceptron
     var learnRate = 0.3;
     var error = Number.MAX_VALUE;
     while (error > 0.01) {
-     error = mlp.train(learnRate);
- }
+       error = mlp.train(learnRate);
+   }
 
- for (var i = 0; i < arrayTesting.length; i++) {
-    mlp.classify([arrayTesting[i][0],arrayTesting[i][1],arrayTesting[i][2],arrayTesting[i][3],arrayTesting[i][4],arrayTesting[i][5],arrayTesting[i][6],arrayTesting[i][7],arrayTesting[i][8]]);
+   for (var i = 0; i < arrayTesting.length; i++) {
+    mlp.classify([
+        parseFloat(arrayTesting[i][0]),
+        parseFloat(arrayTesting[i][1]),
+        parseFloat(arrayTesting[i][2]),
+        parseFloat(arrayTesting[i][3]),
+        parseFloat(arrayTesting[i][4]),
+        parseFloat(arrayTesting[i][5]),
+        parseFloat(arrayTesting[i][6]),
+        parseFloat(arrayTesting[i][7]),
+        parseFloat(arrayTesting[i][8])
+        ]);
 }
 
 var data = mlp.exportToJson();
