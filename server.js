@@ -176,7 +176,20 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
             paramI: parseFloat(arrayTraining[i].paramI)
         };
 
-        data.push({input: obj, output: {type : parseInt(arrayTraining[i].type)}});    
+        if(arrayTraining[i].type === '1'){
+            data.push({input: obj, output: {'1' : arrayTraining[i].type}}); 
+        }else if(arrayTraining[i].type === '2'){
+            data.push({input: obj, output: {'2' : arrayTraining[i].type}}); 
+        }else if(arrayTraining[i].type === '3'){
+            data.push({input: obj, output: {'3' : arrayTraining[i].type}}); 
+        }else if(arrayTraining[i].type === '5'){
+            data.push({input: obj, output: {'5' : arrayTraining[i].type}}); 
+        }else if(arrayTraining[i].type === '6'){
+            data.push({input: obj, output: {'6' : arrayTraining[i].type}}); 
+        }else if(arrayTraining[i].type === '7'){
+            data.push({input: obj, output: {'7' : arrayTraining[i].type}}); 
+        }
+           
     }
     net.train(data);
 
