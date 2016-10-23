@@ -9,6 +9,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "csv-parse": "^1.1.7",
     "k.n.n": "^1.0.3",
     "mlp": "^1.1.0",
     "nearest-neighbor": "0.0.3"

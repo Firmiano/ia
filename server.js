@@ -2,48 +2,43 @@
 // create the perceptron
 var MLP = require('mlp');
 var mlp = new MLP(2,3);
-var nn = require('nearest-neighbor');
 var kNN = require('k.n.n');
+var fs = require('fs'); 
+var parse = require('csv-parse');
 
-var data = [ new kNN.Node({paramA: 1, paramB: 300, type: 'typeA'}), 
-            new kNN.Node({paramA: 14, paramB: 350, type: 'typeA'}), 
-            new kNN.Node({paramA: 2, paramB: 1200, type: 'typeB'}), 
-            new kNN.Node({paramA: 6, paramB: 900, type: 'typeB'}), 
-            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
-            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
-            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}),
-            new kNN.Node({paramA: 2, paramB: 1220, type: 'typeC'}), 
-            new kNN.Node({paramA: 2, paramB: 900, type: 'typeC'}) ];
-
-var example = new kNN(data);
-
-var results = example.launch(9, new kNN.Node({paramA:2, paramB:1220, type:false}));
-console.log('results', results);
-
-console.log(results.type + ': '+results.percentage+'%');
- 
+var csvData=[];
+fs.createReadStream("./arquivo/winequality-white.csv")
+    .pipe(parse({delimiter: ';'}))
+    .on('data', function(csvrow) {
+        //do something with csvrow
+        csvData.push(csvrow);        
+    })
+    .on('end',function() {
+      //do something wiht csvData
+      console.log(csvData);
+    });
 
 function knn(){
-	var items = [
-	  { name: 'Bill', age: 10, pc: 'Mac', ip: '68.23.13.8' },
-	  { name: 'Alice', age: 22, pc: 'Windows', ip: '193.186.11.3' },
-	  { name: 'Bob', age: 12, pc: 'Windows', ip: '56.89.22.1' }
-	];
-	 
-	var query = { name: 'Bill', age: 12, pc: 'Windows', ip: '68.23.13.10' };
-	 
-	var fields = [
-	  { name: 'name', measure: nn.comparisonMethods.word },
-	  { name: 'age', measure: nn.comparisonMethods.number, max: 100 },
-	  { name: 'pc', measure: nn.comparisonMethods.word }, 
-	  { name: 'ip', measure: nn.comparisonMethods.ip }
-	];
-	 
-	nn.findMostSimilar(query, items, fields, function(nearestNeighbor, probability) {
-	  console.log(query);
-	  console.log(nearestNeighbor);
-	  console.log(probability);
-	});
+    var data = [ new kNN.Node({paramA: 1, paramB: 300, type: 'typeA'}), 
+    new kNN.Node({paramA: 14, paramB: 350, type: 'typeA'}), 
+    new kNN.Node({paramA: 2, paramB: 1200, type: 'typeA'}), 
+    new kNN.Node({paramA: 6, paramB: 900, type: 'typeB'}), 
+    new kNN.Node({paramA: 2, paramB: 770, type: 'typeB'}),
+    new kNN.Node({paramA: 3, paramB: 160, type: 'typeB'}),
+    new kNN.Node({paramA: 6, paramB: 120, type: 'typeC'}),
+    new kNN.Node({paramA: 1, paramB: 1220, type: 'typeC'}), 
+    new kNN.Node({paramA: 7, paramB: 900, type: 'typeC'}) ];
+
+    var example = new kNN(data);
+
+    var teste = [new kNN.Node({paramA:1, paramB:300, type:false}),new kNN.Node({paramA:7, paramB:900, type:false})];
+
+    for (var i = 0; i < teste.length; i++) {
+        var results = example.launch(5, teste[i]);
+        console.log('results', results);
+        console.log(results.type + ': '+results.percentage+'%');
+    }
+
 }
 
 function mlp(){
@@ -65,16 +60,16 @@ function mlp(){
 	var learnRate = 0.5;
 	var error = Number.MAX_VALUE;
 	while (error > 0.01) {
-	    error = mlp.train(learnRate);
-	    console.log('error', error);
-	}
+       error = mlp.train(learnRate);
+       console.log('error', error);
+   }
 
-	var elementToClassify = [1,1];
-	var classification = mlp.classify(elementToClassify);
+   var elementToClassify = [1,1];
+   var classification = mlp.classify(elementToClassify);
 
-	var data = mlp.exportToJson();
+   var data = mlp.exportToJson();
 
-	for (var i = 0; i < data.mlpData.length; i++) {
-	    console.log(data.mlpData[i]);
-	}
+   for (var i = 0; i < data.mlpData.length; i++) {
+       console.log(data.mlpData[i]);
+   }
 }
