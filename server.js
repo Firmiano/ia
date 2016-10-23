@@ -6,6 +6,7 @@ var fs = require('fs');
 var parse = require('csv-parse');
 var KNN = require('ml-knn');
 var knn = new KNN();
+var kNN = require("k.n.n");
 
 var csvData=[];
 var dataTraining=[];
@@ -16,8 +17,8 @@ startProgram();
 
 function startProgram(){
     //Lendo arquivo csv com os dados
-    fs.createReadStream("./arquivo/winequality-white.csv")
-    .pipe(parse({delimiter: ','}))
+    fs.createReadStream("./arquivo/glass.csv")
+    .pipe(parse({delimiter: ',',columns :true}))
     .on('data', function(csvrow) {
         csvData.push(csvrow);        
     })
@@ -50,8 +51,6 @@ function startProgram(){
 
 //Função responsável por separar a massa da dodos em treinamento e teste.
 function separateTrainingTesting(array, callback){
-    //removendo cabeçalho.
-    array.splice(0, 1);
 
     var total = array.length;
     console.log('Total de dados : ', total);
@@ -71,37 +70,52 @@ function separateTrainingTesting(array, callback){
 function startKnn(k,arrayTraining,arrayTesting,callback){
     console.log("Iniciando Knn de k =",k);
 
-    var trainingSet = arrayTraining;
-    var predictions = [0,0,0,1,1,1];
-
-    var options = {
-        k : k
-    };
-
-    knn.train(trainingSet, predictions,options);
-    var dataset = arrayTesting;
-
-    var ans = knn.predict(dataset);
-    
-    var zero = 0;
-    var um = 0;
+    var ok = 0;
     var erro = 0;
+    var data = [];
 
-    for (var i = 0; i < ans.length; i++) {
-        if(ans[i] === 0){
-            zero++;
-        }else if(ans[i] === 1){
-            um++;
-        }
-        else{
+    for (var i = 0; i < dataTraining.length; i++) {
+        var obj = {
+            paramA: parseFloat(dataTraining[i].paramA), 
+            paramB: parseFloat(dataTraining[i].paramB),
+            paramC: parseFloat(dataTraining[i].paramC),
+            paramD: parseFloat(dataTraining[i].paramD),
+            paramE: parseFloat(dataTraining[i].paramE),
+            paramF: parseFloat(dataTraining[i].paramF),
+            paramG: parseFloat(dataTraining[i].paramG),
+            paramH: parseFloat(dataTraining[i].paramH),
+            paramI: parseFloat(dataTraining[i].paramI),
+            type: dataTraining[i].type
+        };
+        data.push(new kNN.Node(obj));
+    }
+
+    var example = new kNN(data);
+    for (var i = 0; i < dataTest.length; i++) {
+        var obj = {
+            paramA: parseFloat(dataTest[i].paramA), 
+            paramB: parseFloat(dataTest[i].paramB),
+            paramC: parseFloat(dataTest[i].paramC),
+            paramD: parseFloat(dataTest[i].paramD),
+            paramE: parseFloat(dataTest[i].paramE),
+            paramF: parseFloat(dataTest[i].paramF),
+            paramG: parseFloat(dataTest[i].paramG),
+            paramH: parseFloat(dataTest[i].paramH),
+            paramI: parseFloat(dataTest[i].paramI),
+            type: false
+        };
+
+        var results = example.launch(k, new kNN.Node(obj));
+        if (results.type === dataTest[i].type){
+            ok++;
+        }else{
             erro++;
         }
     }
 
-    console.log('Quantidade de teste = ', ans.length);
-    console.log('Quantidade de teste na classe Zero = ', zero);
-    console.log('Quantidade de teste na classe Um = ', um);
-    console.log('Quantidade de teste sem classe = ', erro);
+    console.log('Quantidade de teste = ', arrayTesting.length);
+    console.log('Quantidade de teste Ok = ', ok);
+    console.log('Quantidade de teste Erro = ', erro);
     callback();
 }
 
