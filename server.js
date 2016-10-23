@@ -5,6 +5,7 @@ var fs = require('fs');
 var parse = require('csv-parse');
 var kNN = require("k.n.n");
 var brain = require("brain");
+var sortBy = require('sort-by');
 
 var csvData=[];
 var dataTraining=[];
@@ -31,12 +32,12 @@ function startProgram(){
                     //Chamando a função para k = 9
                     startKnn(9,dataTraining,dataTest,function(){
                         console.log('Fim Knn!');
-                        //Chamando a função 1x camadas ocultas
-                        startMlp(1,dataTraining,dataTest,function(){
-                            //Chamando a função 2x camadas ocultas
-                            startMlp(2,dataTraining,dataTest,function(){
-                              //Chamando a função 3x camadas ocultas
-                              startMlp(3,dataTraining,dataTest,function(){
+                        //Chamando a função 1x camadas ocultas sendo 5 nodes em cada camada.
+                        startMlp([5],dataTraining,dataTest,function(){
+                            //Chamando a função 2x camadas ocultas sendo 5 nodes em cada camada.
+                            startMlp([5,5],dataTraining,dataTest,function(){
+                              //Chamando a função 3x camadas ocultas sendo 5 nodes em cada camada.
+                              startMlp([5,5,5],dataTraining,dataTest,function(){
                                 console.log('Fim MLP!');
                             });  
                           });
@@ -82,44 +83,44 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
     var cinco = 0;
     var seis = 0;
     var sete = 0;
-
     var erro = 0;
+
     var data = [];
 
-    for (var i = 0; i < dataTraining.length; i++) {
+    for (var i = 0; i < arrayTraining.length; i++) {
         var obj = {
-            paramA: parseFloat(dataTraining[i].paramA), 
-            paramB: parseFloat(dataTraining[i].paramB),
-            paramC: parseFloat(dataTraining[i].paramC),
-            paramD: parseFloat(dataTraining[i].paramD),
-            paramE: parseFloat(dataTraining[i].paramE),
-            paramF: parseFloat(dataTraining[i].paramF),
-            paramG: parseFloat(dataTraining[i].paramG),
-            paramH: parseFloat(dataTraining[i].paramH),
-            paramI: parseFloat(dataTraining[i].paramI),
-            type: dataTraining[i].type
+            paramA: parseFloat(arrayTraining[i].paramA), 
+            paramB: parseFloat(arrayTraining[i].paramB),
+            paramC: parseFloat(arrayTraining[i].paramC),
+            paramD: parseFloat(arrayTraining[i].paramD),
+            paramE: parseFloat(arrayTraining[i].paramE),
+            paramF: parseFloat(arrayTraining[i].paramF),
+            paramG: parseFloat(arrayTraining[i].paramG),
+            paramH: parseFloat(arrayTraining[i].paramH),
+            paramI: parseFloat(arrayTraining[i].paramI),
+            type: arrayTraining[i].type
         };
         data.push(new kNN.Node(obj));
     }
 
     var example = new kNN(data);
 
-    for (var i = 0; i < dataTest.length; i++) {
+    for (var i = 0; i < arrayTesting.length; i++) {
         var obj = {
-            paramA: parseFloat(dataTest[i].paramA), 
-            paramB: parseFloat(dataTest[i].paramB),
-            paramC: parseFloat(dataTest[i].paramC),
-            paramD: parseFloat(dataTest[i].paramD),
-            paramE: parseFloat(dataTest[i].paramE),
-            paramF: parseFloat(dataTest[i].paramF),
-            paramG: parseFloat(dataTest[i].paramG),
-            paramH: parseFloat(dataTest[i].paramH),
-            paramI: parseFloat(dataTest[i].paramI),
+            paramA: parseFloat(arrayTesting[i].paramA), 
+            paramB: parseFloat(arrayTesting[i].paramB),
+            paramC: parseFloat(arrayTesting[i].paramC),
+            paramD: parseFloat(arrayTesting[i].paramD),
+            paramE: parseFloat(arrayTesting[i].paramE),
+            paramF: parseFloat(arrayTesting[i].paramF),
+            paramG: parseFloat(arrayTesting[i].paramG),
+            paramH: parseFloat(arrayTesting[i].paramH),
+            paramI: parseFloat(arrayTesting[i].paramI),
             type: false
         };
 
         var results = example.launch(k, new kNN.Node(obj));
-        if (results.type === dataTest[i].type){
+        if (results.type === arrayTesting[i].type){
             if(results.type === '1'){
                 um++;
             }else if(results.type === '2'){
@@ -154,11 +155,21 @@ function startKnn(k,arrayTraining,arrayTesting,callback){
 
 function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
 
-    console.log('Ininicando MLP de '+ hiddenLayer +' camada oculta');
+    console.log('Ininicando MLP de '+ hiddenLayer.length +' camada oculta');
 
+    var um = 0;
+    var dois = 0;
+    var tres = 0;
+    var cinco = 0;
+    var seis = 0;
+    var sete = 0;
+    var erro = 0;
+    
     var data = [];
+
+
     var net = new brain.NeuralNetwork({
-        hiddenLayers: [hiddenLayer],
+        hiddenLayers: hiddenLayer,
         learningRate: 0.3 
     });
 
@@ -177,17 +188,17 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
         };
 
         if(arrayTraining[i].type === '1'){
-            data.push({input: obj, output: {'1' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'um' : arrayTraining[i].type}}); 
         }else if(arrayTraining[i].type === '2'){
-            data.push({input: obj, output: {'2' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'dois' : arrayTraining[i].type}}); 
         }else if(arrayTraining[i].type === '3'){
-            data.push({input: obj, output: {'3' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'tres' : arrayTraining[i].type}}); 
         }else if(arrayTraining[i].type === '5'){
-            data.push({input: obj, output: {'5' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'cinco' : arrayTraining[i].type}}); 
         }else if(arrayTraining[i].type === '6'){
-            data.push({input: obj, output: {'6' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'seis' : arrayTraining[i].type}}); 
         }else if(arrayTraining[i].type === '7'){
-            data.push({input: obj, output: {'7' : arrayTraining[i].type}}); 
+            data.push({input: obj, output: {'sete' : arrayTraining[i].type}}); 
         }
            
     }
@@ -195,19 +206,56 @@ function startMlp(hiddenLayer,arrayTraining,arrayTesting,callback){
 
     for (var i = 0; i < arrayTesting.length; i++) {
         var obj = {
-            paramA: parseFloat(dataTest[i].paramA), 
-            paramB: parseFloat(dataTest[i].paramB),
-            paramC: parseFloat(dataTest[i].paramC),
-            paramD: parseFloat(dataTest[i].paramD),
-            paramE: parseFloat(dataTest[i].paramE),
-            paramF: parseFloat(dataTest[i].paramF),
-            paramG: parseFloat(dataTest[i].paramG),
-            paramH: parseFloat(dataTest[i].paramH),
-            paramI: parseFloat(dataTest[i].paramI)
+            paramA: parseFloat(arrayTesting[i].paramA), 
+            paramB: parseFloat(arrayTesting[i].paramB),
+            paramC: parseFloat(arrayTesting[i].paramC),
+            paramD: parseFloat(arrayTesting[i].paramD),
+            paramE: parseFloat(arrayTesting[i].paramE),
+            paramF: parseFloat(arrayTesting[i].paramF),
+            paramG: parseFloat(arrayTesting[i].paramG),
+            paramH: parseFloat(arrayTesting[i].paramH),
+            paramI: parseFloat(arrayTesting[i].paramI)
         };
-        var output = net.run(obj); 
-        console.log('output', output);
+        var result = net.run(obj);
+        
+        var array = [];
+        array.push( { num: result.um, type : '1'},
+                    { num: result.dois, type : '2'},
+                    { num:result.tres, type : '3'},
+                    { num:result.cinco, type : '5'},
+                    { num:result.seis, type : '6'},
+                    { num:result.sete, type : '7'});
+        array.sort(sortBy('-num'));
+
+        if (array[0].type === arrayTesting[i].type){
+            if(array[0].type === '1'){
+                um++;
+            }else if(array[0].type === '2'){
+                dois++;
+            }else if(array[0].type === '3'){
+                tres++;
+            }else if(array[0].type === '5'){
+                cinco++;
+            }else if(array[0].type === '6'){
+                seis++;
+            }else if(array[0].type === '7'){
+                sete++;
+            }
+        }else{
+            erro++;
+        }
     }
-   
+    console.log('');
+    console.log('Quantidade de teste = ', arrayTesting.length);
+    console.log('---------------------------------------------------------');
+    console.log('Quantidade de teste na classe 1 = ', um);
+    console.log('Quantidade de teste na classe 2 = ', dois);
+    console.log('Quantidade de teste na classe 3 = ', tres);
+    console.log('Quantidade de teste na classe 5 = ', cinco);
+    console.log('Quantidade de teste na classe 6 = ', seis);
+    console.log('Quantidade de teste na classe 7 = ', sete);
+    console.log('Quantidade de teste Erro = ', erro);
+    console.log('---------------------------------------------------------');
+    console.log('');
    callback();
  }
