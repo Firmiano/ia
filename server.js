@@ -33,11 +33,11 @@ function startProgram(){
                     startKnn(9,dataTraining,dataTest,function(){
                         console.log('Fim Knn!');
                         //Chamando a função 1x camadas ocultas sendo 10 nodes em cada camada.
-                        startMlp([10],dataTraining,dataTest,function(){
+                        startMlp([9],dataTraining,dataTest,function(){
                             //Chamando a função 2x camadas ocultas sendo 10 nodes em cada camada.
-                            startMlp([10,10],dataTraining,dataTest,function(){
+                            startMlp([18],dataTraining,dataTest,function(){
                               //Chamando a função 3x camadas ocultas sendo 10 nodes em cada camada.
-                              startMlp([10,10,10],dataTraining,dataTest,function(){
+                              startMlp([27],dataTraining,dataTest,function(){
                                 console.log('Fim MLP!');
                             });  
                           });
